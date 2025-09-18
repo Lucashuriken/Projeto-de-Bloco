@@ -2,9 +2,12 @@ package org.bugsolver;
 
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class BugSolverApplication {
+@SpringBootApplication
+public class BugsolverApplication {
+
     public static void main(String[] args) {
-        SpringApplication.run(BugSolverApplication.class, args);
+        SpringApplication.run(BugsolverApplication.class, args);
     }
 }

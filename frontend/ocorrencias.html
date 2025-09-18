@@ -1,0 +1,73 @@
+<!-- frontend/ocorrencias.html -->
+<!DOCTYPE html>
+<html lang = "PT-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Ocorrências - BugSolver</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f4f4f4; }
+        #filters input { margin-right: 10px; }
+    </style>
+</head>
+<body>
+<h2>Lista de Ocorrências</h2>
+<!-- Filtros -->
+<div id="filters">
+    <label>Gravidade: <input type="text" id="filterGravidade" placeholder="Alta/Média/Baixa"></label>
+    <label>Status: <input type="text" id="filterStatus" placeholder="Aberto/Fechado"></label>
+    <label>Grupo: <input type="text" id="filterGrupo" placeholder="Suporte/Front-end/etc."></label>
+    <button id="btnFiltrar">Aplicar Filtros</button>
+</div>
+<!-- Tabela de ocorrências -->
+<table id="tabelaOcorrencias">
+    <thead>
+    <tr><th>ID</th><th>Título</th><th>Gravidade</th><th>Status</th><th>Grupo</th></tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    const tabelaBody = document.querySelector('#tabelaOcorrencias tbody');
+    const btnFiltrar = document.getElementById('btnFiltrar');
+
+    // Função para carregar ocorrências com parâmetros opcionais
+    function carregarOcorrencias() {
+        // Obtém valores dos filtros
+        const gravidade = document.getElementById('filterGravidade').value;
+        const status = document.getElementById('filterStatus').value;
+        const grupo = document.getElementById('filterGrupo').value;
+
+        // Monta query string
+        let query = '?';
+        if (gravidade) query += `gravidade=${encodeURIComponent(gravidade)}&`;
+        if (status) query += `status=${encodeURIComponent(status)}&`;
+        if (grupo) query += `grupo=${encodeURIComponent(grupo)}&`;
+
+        fetch('/api/ocorrencias' + query)
+            .then(res => res.json())
+            .then(ocorrencias => {
+                tabelaBody.innerHTML = '';
+                ocorrencias.forEach(o => {
+                    let row = tabelaBody.insertRow();
+                    row.insertCell().innerText = o.id;
+                    row.insertCell().innerText = o.titulo;
+                    row.insertCell().innerText = o.gravidade;
+                    row.insertCell().innerText = o.status;
+                    row.insertCell().innerText = o.grupo;
+                });
+            })
+            .catch(err => console.error('Erro ao carregar ocorrências:', err));
+    }
+
+    btnFiltrar.addEventListener('click', () => {
+        carregarOcorrencias();
+    });
+
+    // Carrega ocorrências ao abrir a página
+    carregarOcorrencias();
+</script>
+</body>
+</html>

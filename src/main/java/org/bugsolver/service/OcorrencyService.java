@@ -28,7 +28,7 @@ public class OcorrencyService {
             throw new IllegalArgumentException("AutorId obrigatório");
         }
         o.setDataCriacao(LocalDateTime.now());
-        o.setStatus(Ocorrency.OPEN);
+        o.setStatus(OcorrencyStatus.OPEN);
         return repo.salvar(o);
     }
 
@@ -46,7 +46,7 @@ public class OcorrencyService {
         boolean changed = false;
         for (Ocorrency o : lista) {
             if (o.getId().equals    (id)) {
-                o.setStatus(Ocorrency.CLOSED);
+                o.setStatus(OcorrencyStatus.CLOSED);
                 o.setDataFechamento(LocalDateTime.now());
                 o.setResponsavelId(quemFechouId);
                 changed = true;

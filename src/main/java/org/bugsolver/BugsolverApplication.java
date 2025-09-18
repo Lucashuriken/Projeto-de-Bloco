@@ -1,13 +1,10 @@
-package org.example.bugsolver;
+package org.bugsolver;
 
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
-@SpringBootApplication
-public class BugsolverApplication {
+public class BugSolverApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BugsolverApplication.class, args);
+        SpringApplication.run(BugSolverApplication.class, args);
     }
 }

@@ -1,4 +1,7 @@
 package org.bugsolver.model.enums;
 
-public class GravityLevel {
+public enum GravityLevel {
+    LOW,
+    MEDIUM,
+    HIGH
 }

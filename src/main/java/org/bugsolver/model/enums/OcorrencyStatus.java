@@ -1,4 +1,6 @@
 package org.bugsolver.model.enums;
 
-public class OcorrencyStatus {
+public enum OcorrencyStatus {
+    OPEN,
+    CLOSED,
 }

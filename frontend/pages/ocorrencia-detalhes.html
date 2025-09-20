@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Ocorrência - BugSolver</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #666;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #f7fafc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .occurrence-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-priority-high { background: #fed7d7; color: #c53030; }
+        .badge-priority-medium { background: #feebc8; color: #c05621; }
+        .badge-priority-low { background: #c6f6d5; color: #2f855a; }
+
+        .badge-status-open { background: #fed7d7; color: #c53030; }
+        .badge-status-closed { background: #c6f6d5; color: #2f855a; }
+
+        .meta-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.875rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .meta-value {
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .description {
+            white-space: pre-wrap;
+            line-height: 1.6;
+            color: #4a5568;
+        }
+
+        .messages-section {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .message-item:last-child {
+            border-bottom: none;
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .message-author {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .message-date {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .message-content {
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .new-message-form {
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2f855a;
+        }
+
+        .btn-warning {
+            background: #d69e2e;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #b7791f;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <h1>🐛 BugSolver</h1>
+    <div class="nav-links">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="ocorrencias.html" class="nav-link">← Voltar às Ocorrências</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="main-content">
+        <!-- DETALHES DA OCORRÊNCIA -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <h1 class="occurrence-title" id="occurrenceTitle">Carregando...</h1>
+                    <div class="badges" id="badges"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="meta-info" id="metaInfo"></div>
+                <div>
+                    <h3>📝 Descrição</h3>
+                    <p class="description" id="description">Carregando descrição...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENSAGENS -->
+        <div class="card">
+            <div class="card-header">
+                <h3>💬 Mensagens e Comentários</h3>
+            </div>
+            <div class="messages-section" id="messagesSection">
+                <div class="loading">
+                    <p>Carregando mensagens...</p>
+                </div>
+            </div>
+            <div class="new-message-form">
+                <div class="form-group">
+                    <label for="newMessage">Adicionar Comentário:</label>
+                    <textarea id="newMessage" placeholder="Digite seu comentário..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="sendMessage()">
+                    💬 Enviar Comentário
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <!-- AÇÕES -->
+        <div class="card">
+            <div class="card-header">
+                <h3>⚡ Ações Rápidas</h3>
+            </div>
+            <div class="card-body">
+                <div class="action-buttons" id="actionButtons">
+                    <!-- Botões serão inseridos dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- INFORMAÇÕES ADICIONAIS -->
+        <div class="card">
+            <div class="card-header">
+                <h3>📊 Estatísticas</h3>
+            </div>
+            <div class="card-body" id="stats">
+                <div class="meta-item">
+                    <span class="meta-label">Total de Comentários</span>
+                    <span class="meta-value" id="totalComments">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Verificar autenticação
+    if (!localStorage.getItem('token')) {
+        window.location.href = 'login.html';
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const occurrenceId = urlParams.get('id');
+    const currentUserId = parseInt(localStorage.getItem('userId'));
+    const currentUserName = localStorage.getItem('userName');
+
+    if (!occurrenceId) {
+        alert('ID da ocorrência não encontrado');
+        window.location.href = 'ocorrencias.html';
+    }
+
+    let currentOccurrence = null;
+
+    // Carregar detalhes da ocorrência
+    async function loadOccurrence() {
+        try {
+            const response = await fetch(`/api/ocorrencias/${occurrenceId}`);
+            if (!response.ok) {
+                throw new Error('Ocorrência não encontrada');
+            }
+
+            currentOccurrence = await response.json();
+            displayOccurrence();
+            setupActionButtons();
+        } catch (error) {
+            console.error('Erro ao carregar ocorrência:', error);
+            alert('Erro ao carregar ocorrência');
+            window.location.href = 'ocorrencias.html';
+        }
+    }
+
+    // Exibir detalhes da ocorrência
+    function displayOccurrence() {
+        const o = currentOccurrence;
+
+        document.getElementById('occurrenceTitle').textContent = o.titulo;
+
+        // Badges
+        const priorityText = {
+            'HIGH': 'Alta Prioridade',
+            'MEDIUM': 'Média Prioridade',
+            'LOW': 'Baixa Prioridade'
+        }[o.gravityLevel] || 'Prioridade não definida';
+
+        const statusText = o.status === 'OPEN' ? 'Aberta' : 'Fechada';
+
+        document.getElementById('badges').innerHTML = `
+                <span class="badge badge-priority-${o.gravityLevel?.toLowerCase() || 'medium'}">${priorityText}</span>
+                <span class="badge badge-status-${o.status?.toLowerCase() || 'open'}">${statusText}</span>
+            `;
+
+        // Meta informações
+        const createdDate = o.dataCriacao ?
+            new Date(o.dataCriacao).toLocaleString('pt-BR') :
+            'Data não informada';
+
+        const closedDate = o.dataFechamento ?
+            new Date(o.dataFechamento).toLocaleString('pt-BR') :
+            'Não fechada';
+
+        document.getElementById('metaInfo').innerHTML = `
+                <div class="meta-item">
+                    <span class="meta-label">ID da Ocorrência</span>
+                    <span class="meta-value">#${o.id}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Criado em</span>
+                    <span class="meta-value">${createdDate}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status</span>
+                    <span class="meta-value">${statusText}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Data de Fechamento</span>
+                    <span class="meta-value">${closedDate}</span>
+                </div>
+            `;
+
+        // Descrição
+        document.getElementById('description').textContent = o.descricao || 'Sem descrição';
+    }
+
+    // Configurar botões de ação
+    function setupActionButtons() {
+        const o = currentOccurrence;
+        const buttons = [];
+
+        if (o.status === 'OPEN') {
+            buttons.push(`
+                    <button class="btn btn-success" onclick="closeOccurrence()">
+                        ✅ Fechar Ocorrência
+                    </button>
+                `);
+
+            if (o.responsavelId !== currentUserId) {
+                buttons.push(`
+                        <button class="btn btn-warning" onclick="assignToMe()">
+                            👤 Atribuir para Mim
+                        </button>
+                    `);
+            }
+        }
+
+        document.getElementById('actionButtons').innerHTML = buttons.join('');
+    }
+
+    // Carregar mensagens
+    async function loadMessages() {
+        try {
+            const response = await fetch(`/api/messages/ocorrencia/${occurrenceId}`);
+            const messages = await response.json();
+
+            displayMessages(messages);
+            document.getElementById('totalComments').textContent = messages.length;
+        } catch (error) {
+            console.error('Erro ao carregar mensagens:', error);
+            document.getElementById('messagesSection').innerHTML =
+                '<div class="empty-state"><p>Erro ao carregar mensagens</p></div>';
+        }
+    }
+
+    // Exibir mensagens
+    function displayMessages(messages) {
+        const container = document.getElementById('messagesSection');
+
+        if (messages.length === 0) {
+            container.innerHTML = `
+                    <div class="empty-state">
+                        <p>💭 Nenhum comentário ainda</p>
+                        <p>Seja o primeiro a comentar!</p>
+                    </div>
+                `;
+            return;
+        }
+
+        container.innerHTML = messages.map(m => `
+                <div class="message-item">
+                    <div class="message-header">
+                        <span class="message-author">${m.autor}</span>
+                        <span class="message-date">${formatDate(m.data)}</span>
+                    </div>
+                    <div class="message-content">${m.conteudo}</div>
+                </div>
+            `).join('');
+
+        // Scroll para o final
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Formatar data
+    function formatDate(dateStr) {
+        if (!dateStr) return 'Data não informada';
+
+        try {
+            // Se for apenas uma data (YYYY-MM-DD), assumir como hoje
+            if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                return new Date(dateStr + 'T12:00:00').toLocaleDateString('pt-BR');
+            }
+            return new Date(dateStr).toLocaleString('pt-BR');
+        } catch {
+            return dateStr;
+        }
+    }
+
+    // Enviar mensagem
+    async function sendMessage() {
+        const messageText = document.getElementById('newMessage').value.trim();
+
+        if (!messageText) {
+            alert('Digite uma mensagem');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/messages/ocorrencia/${occurrenceId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    autor: currentUserName,
+                    conteudo: messageText,
+                    data: new Date().toISOString().split('T')[0]
+                })
+            });
+
+            if (response.ok) {
+                document.getElementById('newMessage').value = '';
+                loadMessages(); // Recarregar mensagens
+            } else {
+                alert('Erro ao enviar mensagem');
+            }
+        } catch (error) {
+            console.error('Erro ao enviar mensagem:', error);
+            alert('Erro de conexão');
+        }
+    }
+
+    // Fechar ocorrência
+    async function closeOccurrence() {
+        if (!confirm('Tem certeza que deseja fechar esta ocorrência?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/ocorrencias/${occurrenceId}/fechar?quemFechouId=${currentUserId}`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                alert('Ocorrência fechada com sucesso!');
+                location.reload();
+            } else {
+                alert('Erro ao fechar ocorrência');
+            }
+        } catch (error) {
+            console.error('Erro ao fechar ocorrência:', error);
+            alert('Erro de conexão');
+        }
+    }
+
+    // Atribuir para mim
+    async function assignToMe() {
+        try {
+            const response = await fetch(`/api/ocorrencias/${occurrenceId}/atribuir?responsavelId=${currentUserId}`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                alert('Ocorrência atribuída para você!');
+                location.reload();
+            } else {
+                alert('Erro ao atribuir ocorrência');
+            }
+        } catch (error) {
+            console.error('Erro ao atribuir ocorrência:', error);
+            alert('Erro de conexão');
+        }
+    }
+
+    // Inicializar
+    loadOccurrence();
+    loadMessages();
+</script>
+</body>
+</html>

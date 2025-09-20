@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BugSolver - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+            color: #2d3748;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            color: #667eea;
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .recent-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recent-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .recent-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .recent-item:last-child {
+            border-bottom: none;
+        }
+
+        .priority-high { border-left: 4px solid #e53e3e; }
+        .priority-medium { border-left: 4px solid #dd6b20; }
+        .priority-low { border-left: 4px solid #38a169; }
+
+        .status-open { color: #e53e3e; }
+        .status-closed { color: #38a169; }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <h1>🐛 BugSolver</h1>
+    <div class="user-info">
+        <span id="userName">Carregando...</span>
+        <button class="btn btn-danger" onclick="logout()">Sair</button>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- ESTATÍSTICAS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" id="totalOcorrencias">0</div>
+            <div class="stat-label">Total de Ocorrências</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="ocorrenciasAbertas">0</div>
+            <div class="stat-label">Abertas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="ocorrenciasFechadas">0</div>
+            <div class="stat-label">Fechadas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="minhasOcorrencias">0</div>
+            <div class="stat-label">Minhas Ocorrências</div>
+        </div>
+    </div>
+
+    <!-- AÇÕES RÁPIDAS -->
+    <div class="actions">
+        <div class="action-card" onclick="window.location.href='nova-ocorrencia.html'">
+            <div class="action-icon">➕</div>
+            <h3>Nova Ocorrência</h3>
+            <p>Reportar um novo bug ou problema</p>
+        </div>
+        <div class="action-card" onclick="window.location.href='ocorrencias.html'">
+            <div class="action-icon">📋</div>
+            <h3>Ver Ocorrências</h3>
+            <p>Listar e filtrar todas as ocorrências</p>
+        </div>
+        <div class="action-card" onclick="window.location.href='grupos.html'">
+            <div class="action-icon">👥</div>
+            <h3>Gerenciar Grupos</h3>
+            <p>Criar e gerenciar grupos de trabalho</p>
+        </div>
+    </div>
+
+    <!-- OCORRÊNCIAS RECENTES -->
+    <div class="recent-section">
+        <div class="section-header">
+            <h2>Ocorrências Recentes</h2>
+            <button class="btn btn-primary" onclick="window.location.href='ocorrencias.html'">
+                Ver Todas
+            </button>
+        </div>
+        <div class="recent-list" id="recentList">
+            <div class="empty-state">
+                <p>Carregando ocorrências...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Verificar autenticação
+    function checkAuth() {
+        const token = localStorage.getItem('token');
+        const userName = localStorage.getItem('userName');
+
+        if (!token) {
+            window.location.href = 'login.html';
+            return false;
+        }
+
+        document.getElementById('userName').textContent = userName || 'Usuário';
+        return true;
+    }
+
+    // Logout
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    // Carregar estatísticas
+    async function loadStats() {
+        try {
+            const response = await fetch('/api/ocorrencias');
+            const ocorrencias = await response.json();
+            const userId = parseInt(localStorage.getItem('userId'));
+
+            document.getElementById('totalOcorrencias').textContent = ocorrencias.length;
+            document.getElementById('ocorrenciasAbertas').textContent =
+                ocorrencias.filter(o => o.status === 'OPEN').length;
+            document.getElementById('ocorrenciasFechadas').textContent =
+                ocorrencias.filter(o => o.status === 'CLOSED').length;
+            document.getElementById('minhasOcorrencias').textContent =
+                ocorrencias.filter(o => o.autorId === userId).length;
+
+            displayRecentOccurrences(ocorrencias.slice(0, 10));
+        } catch (error) {
+            console.error('Erro ao carregar estatísticas:', error);
+        }
+    }
+
+    // Exibir ocorrências recentes
+    function displayRecentOccurrences(ocorrencias) {
+        const container = document.getElementById('recentList');
+
+        if (ocorrencias.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>Nenhuma ocorrência encontrada</p></div>';
+            return;
+        }
+
+        container.innerHTML = ocorrencias.map(o => {
+            const priorityClass = `priority-${o.gravityLevel?.toLowerCase() || 'medium'}`;
+            const statusClass = `status-${o.status?.toLowerCase() || 'open'}`;
+            const statusText = o.status === 'OPEN' ? 'Aberta' : 'Fechada';
+            const priorityText = {
+                'HIGH': 'Alta',
+                'MEDIUM': 'Média',
+                'LOW': 'Baixa'
+            }[o.gravityLevel] || 'Média';
+
+            return `
+                    <div class="recent-item ${priorityClass}" onclick="viewOccurrence(${o.id})">
+                        <div>
+                            <strong>${o.titulo}</strong>
+                            <br>
+                            <small>Prioridade: ${priorityText}</small>
+                        </div>
+                        <div>
+                            <span class="${statusClass}">${statusText}</span>
+                        </div>
+                    </div>
+                `;
+        }).join('');
+    }
+
+    // Ver detalhes de uma ocorrência
+    function viewOccurrence(id) {
+        window.location.href = `ocorrencia-detalhes.html?id=${id}`;
+    }
+
+    // Inicializar
+    if (checkAuth()) {
+        loadStats();
+    }
+</script>
+</body>
+</html>

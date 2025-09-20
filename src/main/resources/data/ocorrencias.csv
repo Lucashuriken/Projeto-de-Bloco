@@ -1,0 +1,36 @@
+"id","titulo","descricao","autorId","grupoId","responsavelId","nivelGravidade","status","dataCriacao","dataFechamento"
+"1","Erro de validação no formulário de cadastro","Quando o usuário tenta se cadastrar com um email inválido, a mensagem de erro não aparece corretamente.
+
+Passos para reproduzir:
+1. Acessar tela de cadastro
+2. Inserir email inválido
+3. Clicar em cadastrar
+
+Resultado esperado: Mensagem de erro clara
+Resultado atual: Página fica em branco","4","1","","HIGH","OPEN","2025-09-20T10:48:59.7251751",""
+"2","Performance lenta na consulta de relatórios","Os relatórios estão demorando mais de 30 segundos para carregar quando há muitos dados.
+
+Detalhes técnicos:
+- Query no banco está sem otimização
+- Falta índice na tabela de logs
+- Possível memory leak no processo","1","2","","MEDIUM","OPEN","2025-09-20T10:48:59.7261744",""
+"3","Adicionar filtro de data nas ocorrências","Solicitação de melhoria para adicionar filtros de data na listagem de ocorrências.
+
+Requirements:
+- Filtro por data de criação
+- Filtro por data de fechamento
+- Range de datas (de/até)
+- Integração com os filtros existentes","2","1","","LOW","OPEN","2025-09-20T10:48:59.7271744",""
+"4","Usuário não consegue fazer logout","Alguns usuários relataram que o botão de logout não funciona em determinados browsers.
+
+Browsers afetados:
+- Safari 14.x
+- Firefox 89.x
+
+Workaround: Fechar todas as abas do browser","4","1","2","HIGH","OPEN","2025-09-20T10:48:59.7271744","2025-09-18T10:48:59.7271744"
+"5","Cliente não recebe emails de notificação","Cliente reportou que não está recebendo emails automáticos do sistema.
+
+Informações do cliente:
+- Email: cliente@empresa.com
+- Última notificação: há 1 semana
+- Verificar configurações SMTP","1","4","","MEDIUM","OPEN","2025-09-20T10:48:59.7281745",""

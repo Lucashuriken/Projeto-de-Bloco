@@ -71,7 +71,7 @@ public class OcorrencyController {
         }
     }
 
-    @GetMapping("/autor/{autorId}")
+    @GetMapping(value = "/autor/{autorId}")
     public ResponseEntity<List<Ocorrency>> porAutor(@PathVariable Long autorId) {
         return ResponseEntity.ok(service.listarPorAutor(autorId));
     }

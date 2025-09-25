@@ -6,33 +6,66 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// Controller REST para Mensagens
+import java.util.List;
+
 @RestController
+@RequestMapping("/api/messages")
 public class MessageController {
 
     @Autowired
-    private MessageService mensagemService;
+    private MessageService messageService;
 
-
-    // Cria uma nova mensagem vinculada à Ocorrency@PostMapping("/api/Ocorrency/{Ocorrencyd}/mensagens")
-    public Message criarParaOcorrencia(@PathVariable Long Ocorrencyd, @RequestBody Message mensagem) {
-        mensagem.setOcorrenciaId(Ocorrencyd);
-        return mensagemService.save(mensagem);
+    // Listar todas as mensagens
+    @GetMapping
+    public List<Message> listarTodas() {
+        return messageService.findAll();
     }
 
-    @PutMapping("/api/mensagens/{id}")
-    public ResponseEntity<Message> atualizarMessage(@PathVariable Long id, @RequestBody Message mensagem) {
-        Message updated = mensagemService.update(id, mensagem);
+    // Buscar mensagem por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Message> buscarPorId(@PathVariable Long id) {
+        Message message = messageService.findById(id);
+        if (message != null) {
+            return ResponseEntity.ok(message);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Listar mensagens de uma ocorrência
+    @GetMapping("/ocorrencia/{ocorrenciaId}")
+    public List<Message> listarPorOcorrencia(@PathVariable Long ocorrenciaId) {
+        return messageService.findAll().stream()
+                .filter(m -> m.getOcorrenciaId().equals(ocorrenciaId))
+                .toList();
+    }
+
+    // Criar nova mensagem para uma ocorrência
+    @PostMapping("/ocorrencia/{ocorrenciaId}")
+    public Message criarParaOcorrencia(@PathVariable Long ocorrenciaId, @RequestBody Message message) {
+        message.setOcorrenciaId(ocorrenciaId);
+        return messageService.save(message);
+    }
+
+    // Criar mensagem genérica
+    @PostMapping
+    public Message criar(@RequestBody Message message) {
+        return messageService.save(message);
+    }
+
+    // Atualizar mensagem
+    @PutMapping("/{id}")
+    public ResponseEntity<Message> atualizar(@PathVariable Long id, @RequestBody Message message) {
+        Message updated = messageService.update(id, message);
         if (updated != null) {
             return ResponseEntity.ok(updated);
-        } else {
-            return ResponseEntity.notFound().build();
         }
+        return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/api/mensagens/{id}")
-    public ResponseEntity<Void> deletarMessage(@PathVariable Long id) {
-        mensagemService.delete(id);
+    // Deletar mensagem
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        messageService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

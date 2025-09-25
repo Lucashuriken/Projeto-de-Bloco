@@ -1,3 +1,4 @@
+"id","nome","descricao","liderId"
 "1","Front-end","Equipe responsável pela interface do usuário","2"
 "2","Back-end","Equipe responsável pela lógica de negócio e APIs","3"
 "3","Quality Assurance","Equipe de testes e garantia de qualidade","4"
